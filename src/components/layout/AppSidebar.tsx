@@ -68,7 +68,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {mainMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild active={isActive(item.path)}>
+                  <SidebarMenuButton asChild isActive={isActive(item.path)}>
                     <Link to={item.path}>
                       <item.icon size={20} />
                       <span>{item.title}</span>
@@ -86,7 +86,7 @@ export function AppSidebar() {
             <SidebarMenu>
               {userMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild active={isActive(item.path)}>
+                  <SidebarMenuButton asChild isActive={isActive(item.path)}>
                     <Link to={item.path}>
                       <item.icon size={20} />
                       <span>{item.title}</span>

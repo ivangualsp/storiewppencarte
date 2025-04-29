@@ -3,25 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link, Navigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { FormEvent, useState } from "react";
 
-const Login = () => {
-  const { signIn, loading, session } = useAuth();
-  const location = useLocation();
+export const Register = () => {
+  const { signUp, loading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // If already logged in, redirect to dashboard or original location
-  if (session) {
-    const from = (location.state as any)?.from?.pathname || "/dashboard";
-    return <Navigate to={from} replace />;
-  }
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signIn(email, password);
+    
+    // Validate password match
+    if (password !== confirmPassword) {
+      setPasswordError("As senhas não coincidem");
+      return;
+    }
+    
+    // Clear any previous errors
+    setPasswordError("");
+    
+    // Submit the form
+    await signUp(email, password);
   };
 
   return (
@@ -31,9 +37,9 @@ const Login = () => {
           <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center text-white text-2xl font-bold mx-auto mb-2">
             P
           </div>
-          <CardTitle className="text-2xl">PromoMaker</CardTitle>
+          <CardTitle className="text-2xl">Criar conta</CardTitle>
           <CardDescription>
-            Entre na sua conta para criar posts promocionais
+            Cadastre-se para criar posts promocionais incríveis
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -50,32 +56,37 @@ const Login = () => {
               />
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password">Senha</Label>
-                <Link
-                  to="/esqueci-senha"
-                  className="text-xs text-primary hover:underline"
-                >
-                  Esqueceu a senha?
-                </Link>
-              </div>
+              <Label htmlFor="password">Senha</Label>
               <Input 
                 id="password" 
-                type="password" 
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required 
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirm-password">Confirme a senha</Label>
+              <Input 
+                id="confirm-password" 
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required 
+              />
+              {passwordError && (
+                <p className="text-red-500 text-xs">{passwordError}</p>
+              )}
+            </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Entrando..." : "Entrar"}
+              {loading ? "Cadastrando..." : "Cadastrar"}
             </Button>
             <div className="text-center text-sm">
-              Ainda não tem uma conta?{" "}
-              <Link to="/register" className="text-primary hover:underline">
-                Cadastre-se
+              Já tem uma conta?{" "}
+              <Link to="/login" className="text-primary hover:underline">
+                Faça login
               </Link>
             </div>
           </CardFooter>
@@ -84,5 +95,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;
