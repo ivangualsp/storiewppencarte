@@ -9,6 +9,21 @@ export type StoryTemplate = {
   gradientClass: string;
 };
 
+export type StoryFormat = 'story' | 'feed' | 'tv';
+
+export type PromoConfig = {
+  format: StoryFormat;
+  headerBgColor?: string;
+  footerBgColor?: string;
+  headerTextColor?: string;
+  productTextColor?: string;
+  priceTextColor?: string;
+  headerFontSize?: string;
+  productFontSize?: string;
+  priceFontSize?: string;
+  fontFamily?: string;
+};
+
 type StoryCardProps = {
   product: {
     name: string;
@@ -17,12 +32,27 @@ type StoryCardProps = {
     imageUrl?: string;
   };
   template: StoryTemplate;
+  config?: PromoConfig;
   className?: string;
+};
+
+export const defaultPromoConfig: PromoConfig = {
+  format: 'story',
+  headerBgColor: 'transparent',
+  footerBgColor: 'bg-black/25',
+  headerTextColor: 'text-white',
+  productTextColor: 'text-white',
+  priceTextColor: 'text-white',
+  headerFontSize: 'text-3xl',
+  productFontSize: 'text-2xl',
+  priceFontSize: 'text-5xl',
+  fontFamily: 'font-sans',
 };
 
 export const StoryCard = ({
   product,
   template,
+  config = defaultPromoConfig,
   className,
 }: StoryCardProps) => {
   const { name, price, originalPrice, imageUrl } = product;
@@ -33,15 +63,18 @@ export const StoryCard = ({
 
   const [imageError, setImageError] = useState(false);
 
+  // Definir classes com base na configuração
+  const formatClass = `aspect-${config.format}`;
+
   return (
     <div
       className={cn(
-        "story-card w-full mx-auto overflow-hidden shadow-xl",
+        "w-full mx-auto overflow-hidden shadow-xl",
+        formatClass,
+        config.fontFamily,
         className
       )}
       style={{ 
-        width: "100%", 
-        aspectRatio: "9/16",
         maxWidth: "100%"
       }}
     >
@@ -52,12 +85,12 @@ export const StoryCard = ({
         )}
       >
         {/* Cabeçalho */}
-        <div className="p-6 text-white text-center">
-          <h2 className="text-3xl font-bold uppercase tracking-wider mb-2">
+        <div className={cn("p-6 text-center", config.headerBgColor)}>
+          <h2 className={cn("font-bold uppercase tracking-wider mb-2", config.headerFontSize, config.headerTextColor)}>
             OFERTA
           </h2>
           <div className="h-1 w-24 bg-white/50 mx-auto mb-2"></div>
-          <p className="text-white/90 uppercase text-lg">IMPERDÍVEL</p>
+          <p className={cn("uppercase", config.headerTextColor, "opacity-90")}>IMPERDÍVEL</p>
         </div>
 
         {/* Área da Imagem */}
@@ -79,13 +112,15 @@ export const StoryCard = ({
         </div>
 
         {/* Área de Preço e Nome */}
-        <div className="p-8 bg-black/25 text-white text-center">
-          <h3 className="font-bold text-2xl mb-4 px-4">{name}</h3>
+        <div className={cn("p-8 text-center", config.footerBgColor)}>
+          <h3 className={cn("font-bold mb-4 px-4", config.productFontSize, config.productTextColor)}>
+            {name}
+          </h3>
           
           <div className="flex flex-col items-center justify-center mb-2">
             {hasDiscount && (
               <div className="mb-2 flex items-center gap-2">
-                <span className="text-lg line-through text-white/70">
+                <span className={cn("text-lg line-through opacity-70", config.priceTextColor)}>
                   R$ {originalPrice.toFixed(2)}
                 </span>
                 <span className="bg-white text-red-600 text-sm font-bold px-3 py-1 rounded-full">
@@ -95,8 +130,10 @@ export const StoryCard = ({
             )}
             
             <div className="flex items-baseline justify-center">
-              <span className="text-xl mr-1">R$</span>
-              <span className="text-5xl font-bold">{price.toFixed(2)}</span>
+              <span className={cn("text-xl mr-1", config.priceTextColor)}>R$</span>
+              <span className={cn("font-bold", config.priceFontSize, config.priceTextColor)}>
+                {price.toFixed(2)}
+              </span>
             </div>
           </div>
         </div>

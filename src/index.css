@@ -93,9 +93,20 @@
   body {
     @apply bg-background text-foreground;
   }
-
-  .story-card {
+  
+  /* Aspect ratios para diferentes formatos */
+  .aspect-story {
     aspect-ratio: 9/16;
+    max-width: 100%;
+  }
+
+  .aspect-feed {
+    aspect-ratio: 4/5;
+    max-width: 100%;
+  }
+
+  .aspect-tv {
+    aspect-ratio: 16/9;
     max-width: 100%;
   }
 

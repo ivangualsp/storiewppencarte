@@ -70,6 +70,12 @@ export default {
 					green: '#4CAF50',
 					blue: '#2196F3',
 					purple: '#9C27B0',
+					pink: '#FF4081',
+					teal: '#009688',
+					cyan: '#00BCD4',
+					amber: '#FFC107',
+					brown: '#795548',
+					gray: '#9E9E9E'
 				}
 			},
 			borderRadius: {
@@ -116,7 +122,17 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
 				'slide-in': 'slide-in 0.3s ease-out'
-			}
+			},
+			fontSize: {
+				'price-xl': '3.5rem',
+				'price-2xl': '4rem',
+				'price-3xl': '4.5rem',
+			},
+			aspectRatio: {
+				'story': '9/16',
+				'feed': '4/5',
+				'tv': '16/9'
+			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

@@ -1,14 +1,22 @@
 
 import { useRef, useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { StoryCard, StoryTemplate } from "@/components/promo/StoryCard";
+import { StoryCard, StoryTemplate, PromoConfig, defaultPromoConfig } from "@/components/promo/StoryCard";
 import { ProductForm } from "@/components/promo/ProductForm";
 import { TemplateSelector } from "@/components/promo/TemplateSelector";
 import { ActionButtons } from "@/components/promo/ActionButtons";
+import { PromoConfigurator } from "@/components/promo/PromoConfigurator";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { saveDesign, getTemplates } from "@/lib/design-service";
 import { useAuth } from "@/contexts/AuthContext";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
+import { Layout } from "lucide-react";
 
 const CreatePromo = () => {
   const location = useLocation();
@@ -48,6 +56,7 @@ const CreatePromo = () => {
 
   const [selectedTemplate, setSelectedTemplate] = useState<StoryTemplate>(initialTemplate);
   const [isSaving, setIsSaving] = useState(false);
+  const [promoConfig, setPromoConfig] = useState<PromoConfig>(defaultPromoConfig);
 
   const storyRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +81,10 @@ const CreatePromo = () => {
   const handleTemplateSelect = (template: StoryTemplate) => {
     setSelectedTemplate(template);
     toast.success(`Template ${template.name} selecionado`);
+  };
+
+  const handleConfigChange = (newConfig: PromoConfig) => {
+    setPromoConfig(newConfig);
   };
 
   const handleSaveDesign = async () => {
@@ -108,13 +121,37 @@ const CreatePromo = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Informações do Produto</h2>
-          <ProductForm onFormChange={handleFormChange} productData={productData} />
-          <TemplateSelector 
-            templates={templates} 
-            selectedTemplate={selectedTemplate}
-            onSelectTemplate={handleTemplateSelect}
-          />
+          <Tabs defaultValue="product" className="w-full">
+            <TabsList className="w-full grid grid-cols-3 mb-6">
+              <TabsTrigger value="product">Produto</TabsTrigger>
+              <TabsTrigger value="template">Template</TabsTrigger>
+              <TabsTrigger value="config">
+                <Layout className="h-4 w-4 mr-2" /> Formato
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="product">
+              <h2 className="text-xl font-semibold mb-4">Informações do Produto</h2>
+              <ProductForm onFormChange={handleFormChange} productData={productData} />
+            </TabsContent>
+            
+            <TabsContent value="template">
+              <h2 className="text-xl font-semibold mb-4">Escolha um Template</h2>
+              <TemplateSelector 
+                templates={templates} 
+                selectedTemplate={selectedTemplate}
+                onSelectTemplate={handleTemplateSelect}
+              />
+            </TabsContent>
+            
+            <TabsContent value="config">
+              <PromoConfigurator 
+                config={promoConfig} 
+                onChange={handleConfigChange} 
+              />
+            </TabsContent>
+          </Tabs>
+          
           <ActionButtons 
             storyRef={storyRef} 
             onSave={handleSaveDesign}
@@ -124,7 +161,11 @@ const CreatePromo = () => {
 
         <div className="flex justify-center">
           <div className="w-full max-w-xs" ref={storyRef}>
-            <StoryCard product={productData} template={selectedTemplate} />
+            <StoryCard 
+              product={productData} 
+              template={selectedTemplate} 
+              config={promoConfig}
+            />
           </div>
         </div>
       </div>
