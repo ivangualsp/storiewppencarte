@@ -25,9 +25,22 @@ export interface DesignInput {
 
 export async function saveDesign(design: DesignInput): Promise<string | null> {
   try {
+    // Obter o ID do usuário atual
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast.error("Usuário não autenticado");
+      return null;
+    }
+    
+    const designWithUserId = {
+      ...design,
+      user_id: user.id
+    };
+    
     const { data, error } = await supabase
       .from('designs')
-      .insert([design])
+      .insert(designWithUserId)
       .select('id')
       .single();
 

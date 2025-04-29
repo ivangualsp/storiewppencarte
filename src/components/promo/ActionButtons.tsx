@@ -18,13 +18,40 @@ export const ActionButtons = ({ storyRef, onSave, isSaving = false }: ActionButt
     try {
       toast.info("Preparando imagem para download...");
       
-      const canvas = await html2canvas(storyRef.current, {
-        scale: 2,
+      // Clone o elemento para um ambiente controlado para o screenshot
+      const clonedElement = storyRef.current.cloneNode(true) as HTMLDivElement;
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.top = '-9999px';
+      container.style.width = '1080px';  // Largura exata
+      container.style.height = '1920px'; // Altura exata
+      container.appendChild(clonedElement);
+      document.body.appendChild(container);
+      
+      // Ajustar o clone para encaixar nas dimensões exatas
+      clonedElement.style.width = '100%';
+      clonedElement.style.height = '100%';
+      clonedElement.style.margin = '0';
+      clonedElement.style.padding = '0';
+      clonedElement.style.borderRadius = '0';
+      clonedElement.style.boxShadow = 'none';
+      
+      // Gerar o canvas com dimensões específicas
+      const canvas = await html2canvas(clonedElement, {
+        width: 1080,
+        height: 1920,
+        scale: 1,
         logging: false,
         allowTaint: true,
         useCORS: true,
+        backgroundColor: null,
       });
       
+      // Limpar o elemento temporário
+      document.body.removeChild(container);
+      
+      // Converter para imagem e baixar
       const image = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       

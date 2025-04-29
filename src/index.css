@@ -96,6 +96,7 @@
 
   .story-card {
     aspect-ratio: 9/16;
+    max-width: 100%;
   }
 
   .template-gradient-1 {
