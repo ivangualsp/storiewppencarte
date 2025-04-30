@@ -14,6 +14,8 @@ import MainLayout from "./components/layout/MainLayout";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Register } from "./pages/Register";
 import Planos from "./pages/admin/Planos";
+import Users from "./pages/admin/Users";
+import AdminLayout from "./components/layout/AdminLayout";
 
 const queryClient = new QueryClient();
 
@@ -43,19 +45,26 @@ const AppRoutes = () => (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     
-    {/* Protected routes */}
+    {/* Rotas protegidas */}
     <Route element={<ProtectedRoute />}>
-      <Route element={<MainLayout />}>
+      {/* Área principal */}
+      <Route element={<MainLayout />}>        
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<CreatePromo />} />
         <Route path="/designs" element={<MyDesigns />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/admin/planos" element={<Planos />} />
       </Route>
+
+      {/* Área de administração */}
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Navigate to="planos" replace />} />
+        <Route path="planos" element={<Planos />} />
+        <Route path="users" element={<Users />} />
+      </Route>
+
+      {/* Logout */}
+      <Route path="/logout" element={<LogoutHandler />} />
     </Route>
-    
-    {/* Logout route */}
-    <Route path="/logout" element={<LogoutHandler />} />
     
     <Route path="*" element={<NotFound />} />
   </Routes>
