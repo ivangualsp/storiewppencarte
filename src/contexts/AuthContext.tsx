@@ -1,4 +1,3 @@
-
 import { Session, User } from "@supabase/supabase-js";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +11,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   loading: boolean;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +21,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  const isAdmin = user?.user_metadata?.role === 'admin';
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -101,7 +103,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, signIn, signUp, signOut, loading }}>
+    <AuthContext.Provider value={{ session, user, signIn, signUp, signOut, loading, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

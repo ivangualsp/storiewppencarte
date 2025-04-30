@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -14,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { Register } from "./pages/Register";
+import Planos from "./pages/admin/Planos";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +50,7 @@ const AppRoutes = () => (
         <Route path="/create" element={<CreatePromo />} />
         <Route path="/designs" element={<MyDesigns />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin/planos" element={<Planos />} />
       </Route>
     </Route>
     
